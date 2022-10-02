@@ -1,17 +1,23 @@
-import shutil
+import os
+import time
 import uuid0
+import shutil
 from keras.models import load_model
 from PIL import Image, ImageOps
 import numpy as np
-from fastapi import FastAPI, UploadFile, File, status
+from fastapi import FastAPI, UploadFile, File, status,BackgroundTasks
 
 
 app = FastAPI()
 # Load the model
 model = load_model('keras_model.h5')
 
+def delete_image(name):
+    time.sleep(30)
+    os.remove(name)
+
 @app.post("/upload")
-async def upload_image(file: UploadFile = File(...)):
+async def upload_image(backgroundTasks:BackgroundTasks,file: UploadFile = File(...)):
     ext = file.content_type.split('/')[1]
     name = uuid0.generate().base62
     with open(f"image/{name}.{ext}", "wb") as buffer:
@@ -32,4 +38,5 @@ async def upload_image(file: UploadFile = File(...)):
     # # run the inference
     label = ['Class1','Class2']
     prediction = model.predict(data)
+    backgroundTasks.add_task(delete_image,name=f'image/{name}.{ext}')
     return list(zip(label,prediction.tolist()[0]))
