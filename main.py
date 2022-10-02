@@ -36,7 +36,7 @@ async def upload_image(backgroundTasks:BackgroundTasks,file: UploadFile = File(.
     data[0] = normalized_image_array
 
     # # run the inference
-    label = ['Class1','Class2']
+    label = ['Aegypti','Albopictus','Other']
     prediction = model.predict(data)
     backgroundTasks.add_task(delete_image,name=f'image/{name}.{ext}')
     return list(zip(label,prediction.tolist()[0]))
