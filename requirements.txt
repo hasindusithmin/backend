@@ -5,3 +5,5 @@ numpy
 tensorflow
 python-multipart
 uuid0
+opencv-python
+uvicorn

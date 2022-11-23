@@ -1,3 +1,4 @@
+import io
 import os
 import time
 import uuid0
@@ -22,7 +23,8 @@ async def upload_image(backgroundTasks:BackgroundTasks,file: UploadFile = File(.
     name = uuid0.generate().base62
     with open(f"image/{name}.{ext}", "wb") as buffer:
         shutil.copyfileobj(file.file, buffer)
-
+    content = await file.read()
+    # image = Image.open(io.BytesIO(content)).convert('RGB')
     image = Image.open(f'image/{name}.{ext}').convert('RGB')
     size = (224, 224)
     image = ImageOps.fit(image, size, Image.ANTIALIAS)
